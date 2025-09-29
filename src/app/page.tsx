@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Sun, Moon, Truck, Ship, Plane, Package, Phone, Mail, MapPin, ChevronDown } from 'lucide-react';
+import { Menu, X, Sun, Moon, Truck, Ship, Plane, Package, Phone, Mail, MapPin, ChevronDown, Instagram, Facebook, QrCode  } from 'lucide-react';
 
 const ModernLogisticsWebsite = () => {
   const [currentLanguage, setCurrentLanguage] = useState<'en' | 'am' | 'ru'>('en');
@@ -19,7 +19,7 @@ const ModernLogisticsWebsite = () => {
     if (el) el.scrollIntoView({ behavior: 'smooth' });
     setIsMenuOpen(false);
   };
-
+  const [copied, setCopied] = useState(false);
   const year = new Date().getFullYear();
   const htmlLang = currentLanguage === 'am' ? 'hy' : currentLanguage; // important for hyphenation/shaping
   const isHY = htmlLang === 'hy';
@@ -88,7 +88,12 @@ const ModernLogisticsWebsite = () => {
         title: 'Get In Touch',
         address: '1 Kajazuni Street, Yerevan, Armenia',
         email: 'alliance.logistics@mail.ru',
-        phone: '+374 55 670770'
+        phone: '+374 55 670770',
+        socials: {
+          instagram: 'https://www.instagram.com/alliancelogistic?igsh=MWM0MDdueTVlOXVwbA%3D%3D&utm_source=qr',
+          facebook: 'https://www.facebook.com/alliance.logistics2014',
+          wechatId: 'wxid_ococ85u19i9u12'
+        }
       },
       contact_fields: {
         address: 'Address',
@@ -96,8 +101,10 @@ const ModernLogisticsWebsite = () => {
         phone: 'Phone',
         founded: 'Founded',
         support: 'Support',
-        reach: 'Reach'
-      }
+        reach: 'Reach',
+        socials: 'Socials'
+      },
+      platforms: { instagram: 'Instagram', facebook: 'Facebook', wechat: 'WeChat' }
     },
     am: {
       nav: { home: 'ԳԼԽԱՎՈՐ', about: 'ՄԵՐ ՄԱՍԻՆ', services: 'ԾԱՌԱՅՈՒԹՅՈՒՆՆԵՐ', contact: 'ԿԱՊ' },
@@ -162,7 +169,14 @@ const ModernLogisticsWebsite = () => {
         title: 'Կապվեք մեզ հետ',
         address: 'ք. Երևան, Քաջազնունի 1',
         email: 'alliance.logistics@mail.ru',
-        phone: '+374 55 670770'
+        phone: '+374 55 670770',
+        socials: {
+          instagram: 'https://www.instagram.com/alliancelogistic?igsh=MWM0MDdueTVlOXVwbA%3D%3D&utm_source=qr',
+          facebook: 'https://www.facebook.com/alliance.logistics2014',
+          wechatId: 'wxid_ococ85u19i9u12',
+          // optional if you have an image file:
+          // wechatQr: '/wechat-qr.png'
+        }
       },
       contact_fields: {
         address: 'Հասցե',
@@ -170,8 +184,11 @@ const ModernLogisticsWebsite = () => {
         phone: 'Հեռախոս',
         founded: 'Հիմնադրվել է',
         support: 'Աջակցություն',
-        reach: 'Կապ'
-      }
+        reach: 'Կապ',
+        socials: 'Սոցիալական ցանցեր',
+
+      },
+      platforms: { instagram: 'Ինստագրամ', facebook: 'Ֆեյսբուք', wechat: 'WeChat' }
     },
     ru: {
       nav: { home: 'ГЛАВНАЯ', about: 'О НАС', services: 'УСЛУГИ', contact: 'КОНТАКТЫ' },
@@ -236,7 +253,14 @@ const ModernLogisticsWebsite = () => {
         title: 'Связаться с нами',
         address: 'ул. Каджазнуни, 1, Ереван, Армения',
         email: 'alliance.logistics@mail.ru',
-        phone: '+374 55 670770'
+        phone: '+374 55 670770',
+        socials: {
+          instagram: 'https://www.instagram.com/alliancelogistic?igsh=MWM0MDdueTVlOXVwbA%3D%3D&utm_source=qr',
+          facebook: 'https://www.facebook.com/alliance.logistics2014',
+          wechatId: 'wxid_ococ85u19i9u12',
+          // optional if you have an image file:
+          // wechatQr: '/wechat-qr.png'
+        }
       },
       contact_fields: {
         address: 'Адрес',
@@ -244,8 +268,10 @@ const ModernLogisticsWebsite = () => {
         phone: 'Телефон',
         founded: 'Дата основания',
         support: 'Поддержка',
-        reach: 'Связаться'
-      }
+        reach: 'Связаться',
+        socials: 'Соцсети'
+      },
+      platforms: { instagram: 'Инстаграм', facebook: 'Фейсбук', wechat: 'WeChat' }
     }
   } as const;
 
@@ -525,7 +551,11 @@ const ModernLogisticsWebsite = () => {
         </section>
 
         {/* Contact */}
-        <section id="contact" className={`pt-8 md:pt-20  ${isDark ? 'bg-slate-950' : 'bg-slate-50'} relative overflow-hidden`}>
+        {/* Contact Section */}
+        <section
+            id="contact"
+            className={`py-20 ${isDark ? 'bg-slate-950' : 'bg-slate-50'} relative overflow-hidden`}
+        >
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-20 right-20 w-72 h-72 bg-orange-400 rounded-full blur-3xl"></div>
             <div className="absolute bottom-20 left-20 w-96 h-96 bg-orange-600 rounded-full blur-3xl"></div>
@@ -533,36 +563,136 @@ const ModernLogisticsWebsite = () => {
 
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
-              <h2 className={`text-[clamp(24px,5vw,48px)] font-bold mb-8 md:mb-16 ${isDark ? 'text-white' : 'text-slate-900'} break-words hyphens-auto`} lang={htmlLang}>
+              <h2
+                  className={`text-[clamp(24px,5vw,48px)] font-bold mb-16 ${isDark ? 'text-white' : 'text-slate-900'} break-words hyphens-auto`}
+                  lang={htmlLang}
+                  style={{ hyphens: 'auto', WebkitHyphens: 'auto' }}
+              >
                 {currentContent.contact.title.split(' ')[0]}{' '}
                 <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-                {currentContent.contact.title.split(' ').slice(1).join(' ')}
-              </span>
+          {currentContent.contact.title.split(' ').slice(1).join(' ')}
+        </span>
               </h2>
 
-              <div className="grid md:grid-cols-3 gap-8 mb-12">
-                <div className={`${isDark ? 'bg-slate-900/50' : 'bg-white/50'} backdrop-blur-xl rounded-2xl p-8 border ${isDark ? 'border-slate-700/50' : 'border-slate-200/50'} shadow-xl text-center group hover:scale-105 transition-transform`}>
-                  <MapPin size={48} className="text-orange-500 mx-auto mb-4 group-hover:scale-110 transition-transform" />
-                  <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>{currentContent.contact_fields.address}</h3>
-                  <p className={`${isDark ? 'text-slate-400' : 'text-slate-600'}`} lang={htmlLang}>
+              {/* Responsive, equal-height cards */}
+              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 justify-items-stretch mb-12">
+                {/* Address */}
+                <div
+                    className={`${isDark ? 'bg-slate-900/50' : 'bg-white/50'} backdrop-blur-xl rounded-2xl p-8 border ${
+                        isDark ? 'border-slate-700/50' : 'border-slate-200/50'
+                    } shadow-xl text-center group hover:scale-105 transition-transform min-h-[260px] flex flex-col items-center justify-start`}
+                >
+                  <MapPin size={48}
+                          className="text-orange-500 mx-auto mb-4 group-hover:scale-110 transition-transform"/>
+                  <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {currentContent.contact_fields.address}
+                  </h3>
+                  <p
+                      className={`${isDark ? 'text-slate-400' : 'text-slate-600'} break-words text-balance`}
+                      lang={htmlLang}
+                      style={{overflowWrap: 'anywhere'}}
+                  >
                     {currentContent.contact.address}
                   </p>
                 </div>
 
-                <div className={`${isDark ? 'bg-slate-900/50' : 'bg-white/50'} backdrop-blur-xl rounded-2xl p-8 border ${isDark ? 'border-slate-700/50' : 'border-slate-200/50'} shadow-xl text-center group hover:scale-105 transition-transform`}>
-                  <Mail size={48} className="text-orange-500 mx-auto mb-4 group-hover:scale-110 transition-transform" />
-                  <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>{currentContent.contact_fields.email}</h3>
-                  <a href={`mailto:${currentContent.contact.email}`} className="text-orange-500 hover:text-orange-600 transition-colors">
+                {/* Email (wrap nicely so it doesn’t look wider) */}
+                <div
+                    className={`${isDark ? 'bg-slate-900/50' : 'bg-white/50'} backdrop-blur-xl rounded-2xl p-8 border ${
+                        isDark ? 'border-slate-700/50' : 'border-slate-200/50'
+                    } shadow-xl text-center group hover:scale-105 transition-transform min-h-[260px] flex flex-col items-center justify-start`}
+                >
+                  <Mail size={48} className="text-orange-500 mx-auto mb-4 group-hover:scale-110 transition-transform"/>
+                  <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {currentContent.contact_fields.email}
+                  </h3>
+                  <a
+                      href={`mailto:${currentContent.contact.email}`}
+                      className="text-orange-500 hover:text-orange-600 transition-colors break-words"
+                      style={{overflowWrap: 'anywhere'}}
+                  >
                     {currentContent.contact.email}
                   </a>
                 </div>
 
-                <div className={`${isDark ? 'bg-slate-900/50' : 'bg-white/50'} backdrop-blur-xl rounded-2xl p-8 border ${isDark ? 'border-slate-700/50' : 'border-slate-200/50'} shadow-xl text-center group hover:scale-105 transition-transform`}>
-                  <Phone size={48} className="text-orange-500 mx-auto mb-4 group-hover:scale-110 transition-transform" />
-                  <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>{currentContent.contact_fields.phone}</h3>
-                  <a href={`tel:${currentContent.contact.phone}`} className="text-orange-500 hover:text-orange-600 transition-colors">
+                {/* Phone */}
+                <div
+                    className={`${isDark ? 'bg-slate-900/50' : 'bg-white/50'} backdrop-blur-xl rounded-2xl p-8 border ${
+                        isDark ? 'border-slate-700/50' : 'border-slate-200/50'
+                    } shadow-xl text-center group hover:scale-105 transition-transform min-h-[260px] flex flex-col items-center justify-start`}
+                >
+                  <Phone size={48} className="text-orange-500 mx-auto mb-4 group-hover:scale-110 transition-transform"/>
+                  <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {currentContent.contact_fields.phone}
+                  </h3>
+                  <a href={`tel:${currentContent.contact.phone}`}
+                     className="text-orange-500 hover:text-orange-600 transition-colors">
                     {currentContent.contact.phone}
                   </a>
+                  <p className="text-xs mt-2">
+                    WhatsApp / Viber / Telegram
+
+                  </p>
+                </div>
+
+                {/* Socials — icons only */}
+                <div
+                    className={`${isDark ? 'bg-slate-900/50' : 'bg-white/50'} backdrop-blur-xl rounded-2xl p-8 border ${
+                        isDark ? 'border-slate-700/50' : 'border-slate-200/50'
+                    } shadow-xl text-center group hover:scale-105 transition-transform min-h-[260px] flex flex-col items-center justify-start`}
+                    aria-label={currentContent.contact_fields.socials}
+                >
+                  {/* icons row */}
+                  <div className="flex items-center justify-center gap-4 mb-4">
+                    <a
+                        href={currentContent.contact.socials.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-xl hover:bg-orange-500/10 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        title="Instagram"
+                        aria-label="Instagram"
+                    >
+                      <Instagram size={32} className="text-orange-500"/>
+                      <span className="sr-only">Instagram</span>
+                    </a>
+                    <a
+                        href={currentContent.contact.socials.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-xl hover:bg-orange-500/10 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        title="Facebook"
+                        aria-label="Facebook"
+                    >
+                      <Facebook size={32} className="text-orange-500"/>
+                      <span className="sr-only">Facebook</span>
+                    </a>
+                  </div>
+
+                  <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {currentContent.contact_fields.socials}
+                  </h3>
+
+                  {/* WeChat: show only the code, no icon */}
+                  <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(currentContent.contact.socials.wechatId);
+                          setCopied(true);
+                          setTimeout(() => setCopied(false), 1500);
+                        } catch {
+                        }
+                      }}
+                      className={`${isDark ? 'text-slate-400' : 'text-slate-600'} mt-2 text-xs hover:text-orange-600 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 rounded px-2 py-1`}
+                      title={`WeChat: ${currentContent.contact.socials.wechatId} (click to copy)`}
+                      aria-label={`WeChat ID ${currentContent.contact.socials.wechatId}`}
+                  >
+                    WeChat:{' '}
+                    <code className={`${isDark ? 'text-slate-300' : 'text-slate-700'} font-medium`}>
+                      {currentContent.contact.socials.wechatId}
+                    </code>
+                    <span className="ml-2 text-xs">{copied ? 'Copied!' : 'Copy'}</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -581,10 +711,12 @@ const ModernLogisticsWebsite = () => {
                   onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && scrollToSection('home')}
                   aria-label="Go to top"
               >
-                <img src="/alliance-logistics-logo.png" alt="Alliance Logistics" className="w-full object-contain drop-shadow-[0_1px_1px_rgba(0,0,0,0.25)]" />
+                <img src="/alliance-logistics-logo.png" alt="Alliance Logistics"
+                     className="w-full object-contain drop-shadow-[0_1px_1px_rgba(0,0,0,0.25)]"/>
               </div>
             </div>
-            <p className={isDark ? 'text-slate-400' : 'text-slate-600'}>© {year} Alliance Logistics. All rights reserved.</p>
+            <p className={isDark ? 'text-slate-400' : 'text-slate-600'}>© {year} Alliance Logistics. All rights
+              reserved.</p>
           </div>
         </footer>
       </div>
